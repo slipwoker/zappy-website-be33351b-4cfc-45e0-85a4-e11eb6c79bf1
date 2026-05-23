@@ -7,37 +7,37 @@
 ## Pages
 
 ### בית
-https://example.com
+https://hapoel-jerusalem-ohadim.zappy5.app
 Official website for Hapoel Jerusalem basketball club, one of Israel&#39;s top basketball teams. The site is designed to serve dedicated fans with live updates, gam
 
 ### לוח משחקים
-https://example.com/schedule
+https://hapoel-jerusalem-ohadim.zappy5.app/schedule
 לוח משחקים | הפועל ירושלים אוהדים. basketball club website
 
 ### שידורים ועדכונים
-https://example.com/broadcasts-updates
+https://hapoel-jerusalem-ohadim.zappy5.app/broadcasts-updates
 שידורים ועדכונים | הפועל ירושלים אוהדים. basketball club website
 
 ### מועדון ואוהדים
-https://example.com/club-fans
+https://hapoel-jerusalem-ohadim.zappy5.app/club-fans
 מועדון ואוהדים | הפועל ירושלים אוהדים. basketball club website
 
 ### צור קשר
-https://example.com/contact
+https://hapoel-jerusalem-ohadim.zappy5.app/contact
 צור קשר | הפועל ירושלים אוהדים. basketball club website
 
 ## Legal & Policy
 
 ### Privacy Policy
-https://example.com/privacy
+https://hapoel-jerusalem-ohadim.zappy5.app/privacy
 Information about how user data is collected, stored, and protected.
 
 ### Terms & Conditions
-https://example.com/terms
+https://hapoel-jerusalem-ohadim.zappy5.app/terms
 Legal terms describing service usage, rights, and policies.
 
 ### Accessibility Statement
-https://example.com/accessibility
+https://hapoel-jerusalem-ohadim.zappy5.app/accessibility
 Information about WCAG compliance and accessibility features.
 
 ---
@@ -47,8 +47,8 @@ Information about WCAG compliance and accessibility features.
 - (No contact details configured yet.)
 
 ### Contact form
-- URL: https://example.com/contact
-- Endpoint: https://example.com/api/email/contact-form
+- URL: https://hapoel-jerusalem-ohadim.zappy5.app/contact
+- Endpoint: https://hapoel-jerusalem-ohadim.zappy5.app/api/email/contact-form
 - Method: POST
 - Content-Type: application/json
 - Fields:
@@ -78,6 +78,6 @@ Sports / Basketball Club
 
 # Machine-readable feeds
 
-- Sitemap (XML): https://example.com/sitemap.xml
-- Robots: https://example.com/robots.txt
-- Flattened page text (for LLMs): https://example.com/llms-full.txt
+- Sitemap (XML): https://hapoel-jerusalem-ohadim.zappy5.app/sitemap.xml
+- Robots: https://hapoel-jerusalem-ohadim.zappy5.app/robots.txt
+- Flattened page text (for LLMs): https://hapoel-jerusalem-ohadim.zappy5.app/llms-full.txt
