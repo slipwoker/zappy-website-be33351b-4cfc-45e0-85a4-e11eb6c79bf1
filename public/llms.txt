@@ -1,0 +1,83 @@
+# הפועל ירושלים אוהדים — Generative Engine Optimization Map
+
+> Official website for Hapoel Jerusalem basketball club, one of Israel's top basketball teams. The site is designed to serve dedicated fans with live updates, game broadcasts, and a full schedule of matches. The brand carries strong local Jerusalem identity and passionate sports culture, targeting loyal supporters who want to stay connected with the team.
+
+---
+
+## Pages
+
+### בית
+https://example.com
+Official website for Hapoel Jerusalem basketball club, one of Israel&#39;s top basketball teams. The site is designed to serve dedicated fans with live updates, gam
+
+### לוח משחקים
+https://example.com/schedule
+לוח משחקים | הפועל ירושלים אוהדים. basketball club website
+
+### שידורים ועדכונים
+https://example.com/broadcasts-updates
+שידורים ועדכונים | הפועל ירושלים אוהדים. basketball club website
+
+### מועדון ואוהדים
+https://example.com/club-fans
+מועדון ואוהדים | הפועל ירושלים אוהדים. basketball club website
+
+### צור קשר
+https://example.com/contact
+צור קשר | הפועל ירושלים אוהדים. basketball club website
+
+## Legal & Policy
+
+### Privacy Policy
+https://example.com/privacy
+Information about how user data is collected, stored, and protected.
+
+### Terms & Conditions
+https://example.com/terms
+Legal terms describing service usage, rights, and policies.
+
+### Accessibility Statement
+https://example.com/accessibility
+Information about WCAG compliance and accessibility features.
+
+---
+
+## How to Contact Us
+
+- (No contact details configured yet.)
+
+### Contact form
+- URL: https://example.com/contact
+- Endpoint: https://example.com/api/email/contact-form
+- Method: POST
+- Content-Type: application/json
+- Fields:
+  - `name` (text, required)
+  - `email` (email, required)
+  - `phone` (tel)
+  - `message` (textarea, required)
+  - `privacy_consent` (checkbox, required)
+
+---
+
+# Business Context (for LLM understanding)
+
+## About הפועל ירושלים אוהדים
+Official website for Hapoel Jerusalem basketball club, one of Israel's top basketball teams. The site is designed to serve dedicated fans with live updates, game broadcasts, and a full schedule of matches. The brand carries strong local Jerusalem identity and passionate sports culture, targeting loyal supporters who want to stay connected with the team.
+
+## Target Audience
+- אוהדי קבוצת הפועל ירושלים
+- אוהדי הפועל ירושלים
+- חובבי ספורט
+- משפחות מקומיות
+
+## Industry
+Sports / Basketball Club
+
+---
+
+# Machine-readable feeds
+
+- Sitemap (XML): https://example.com/sitemap.xml
+- Robots: https://example.com/robots.txt
+- Flattened page text (for LLMs): https://example.com/llms-full.txt

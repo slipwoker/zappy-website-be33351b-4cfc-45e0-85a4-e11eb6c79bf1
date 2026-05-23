@@ -1,0 +1,1549 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, follow">
+    <title>שידורים ועדכונים — הפועל ירושלים אוהדים</title>
+    <meta name="description" content="שידורים ועדכונים | הפועל ירושלים אוהדים. basketball club website">
+    <meta name="keywords" content="שידורים ועדכונים, basketball club website, הפועל ירושלים, הפועל ירושלים אוהדים, כדורסל">
+    
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon-48x48.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/assets/favicon-512x512.png">
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+    <!-- Zappy Analytics -->
+<script>
+(function() {
+  'use strict';
+  
+  // Configuration
+  var config = {
+    websiteId: 'be33351b-4cfc-45e0-85a4-e11eb6c79bf1',
+    apiUrl: 'https://api.zappy5.com/api/analytics/track',
+    sessionDuration: 30 * 60 * 1000, // 30 minutes
+    visitorDuration: 30 * 24 * 60 * 60 * 1000, // 30 days
+    trackPageViews: true,
+    trackClicks: true,
+    trackFormSubmissions: true
+  };
+  
+  // Generate or retrieve persistent visitor ID (30 days)
+  function getVisitorId() {
+    var visitorKey = 'zappy_visitor_' + config.websiteId;
+    var visitor = null;
+    
+    try {
+      visitor = localStorage.getItem(visitorKey);
+      if (visitor) {
+        var visitorData = JSON.parse(visitor);
+        var now = Date.now();
+        
+        // Check if visitor ID is still valid (30 days)
+        if (now - visitorData.created < config.visitorDuration) {
+          // Update last seen timestamp
+          visitorData.lastSeen = now;
+          localStorage.setItem(visitorKey, JSON.stringify(visitorData));
+          return visitorData.id;
+        }
+      }
+    } catch (e) {
+      console.warn('Zappy Analytics: LocalStorage not available');
+    }
+    
+    // Generate new visitor ID
+    var newVisitorId = 'zv_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    
+    try {
+      localStorage.setItem(visitorKey, JSON.stringify({
+        id: newVisitorId,
+        created: Date.now(),
+        lastSeen: Date.now()
+      }));
+    } catch (e) {
+      // Continue without local storage
+    }
+    
+    return newVisitorId;
+  }
+  
+  // Generate or retrieve session ID (30 minutes)
+  function getSessionId() {
+    var sessionKey = 'zappy_session_' + config.websiteId;
+    var session = null;
+    
+    try {
+      session = sessionStorage.getItem(sessionKey);
+      if (session) {
+        var sessionData = JSON.parse(session);
+        var now = Date.now();
+        
+        // Check if session is still valid
+        if (now - sessionData.timestamp < config.sessionDuration) {
+          // Update timestamp
+          sessionData.timestamp = now;
+          sessionStorage.setItem(sessionKey, JSON.stringify(sessionData));
+          return sessionData.id;
+        }
+      }
+    } catch (e) {
+      console.warn('Zappy Analytics: SessionStorage not available');
+    }
+    
+    // Generate new session ID
+    var newSessionId = 'zs_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    
+    try {
+      sessionStorage.setItem(sessionKey, JSON.stringify({
+        id: newSessionId,
+        timestamp: Date.now()
+      }));
+    } catch (e) {
+      // Continue without session storage
+    }
+    
+    return newSessionId;
+  }
+  
+  var visitorId = getVisitorId();
+  var sessionId = getSessionId();
+  
+  // Track an event
+  function trackEvent(eventType, data) {
+    data = data || {};
+    
+    var eventData = {
+      website_id: config.websiteId,
+      event_type: eventType,
+      page_path: window.location.pathname,
+      referrer: document.referrer || 'direct',
+      visitor_id: visitorId,
+      session_id: sessionId,
+      metadata: data
+    };
+    
+    // Use sendBeacon if available (better for page unload events)
+    if (navigator.sendBeacon) {
+      var blob = new Blob([JSON.stringify(eventData)], { type: 'application/json' });
+      navigator.sendBeacon(config.apiUrl, blob);
+    } else {
+      // Fallback to fetch
+      fetch(config.apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(eventData),
+        keepalive: true
+      }).catch(function(error) {
+        console.warn('Zappy Analytics: Failed to track event', error);
+      });
+    }
+  }
+  
+  // Track page view
+  if (config.trackPageViews) {
+    trackEvent('pageview', {
+      title: document.title,
+      url: window.location.href
+    });
+  }
+  
+  // Track clicks on important elements
+  if (config.trackClicks) {
+    document.addEventListener('click', function(e) {
+      var target = e.target;
+      
+      // Track button clicks (counted as actions)
+      if (target.tagName === 'BUTTON' || target.closest('button')) {
+        var button = target.tagName === 'BUTTON' ? target : target.closest('button');
+        trackEvent('click', {
+          element: 'button',
+          text: button.textContent.trim().substring(0, 100),
+          id: button.id || null,
+          class: button.className || null
+        });
+      }
+      
+      // Track link clicks (navigation - not counted as actions)
+      else if (target.tagName === 'A' || target.closest('a')) {
+        var link = target.tagName === 'A' ? target : target.closest('a');
+        trackEvent('navigation', {
+          element: 'link',
+          text: link.textContent.trim().substring(0, 100),
+          href: link.href,
+          external: link.hostname !== window.location.hostname
+        });
+      }
+    }, true);
+  }
+  
+  // Track form submissions
+  if (config.trackFormSubmissions) {
+    document.addEventListener('submit', function(e) {
+      var form = e.target;
+      
+      trackEvent('form_submit', {
+        form_id: form.id || null,
+        form_name: form.name || null,
+        form_action: form.action || null,
+        form_method: form.method || 'GET'
+      });
+    }, true);
+  }
+  
+  // Track time on page (send on page unload)
+  var pageLoadTime = Date.now();
+  
+  window.addEventListener('beforeunload', function() {
+    var timeOnPage = Math.floor((Date.now() - pageLoadTime) / 1000); // in seconds
+    
+    trackEvent('page_unload', {
+      time_on_page: timeOnPage,
+      page_path: window.location.pathname
+    });
+  });
+  
+  // Expose tracking function globally for custom events
+  window.zappyAnalytics = {
+    track: trackEvent,
+    getVisitorId: function() { return visitorId; },
+    getSessionId: function() { return sessionId; }
+  };
+  
+})();
+</script>
+<!-- End Zappy Analytics -->
+    <meta property="og:title" content="שידורים ועדכונים — הפועל ירושלים אוהדים">
+    <meta property="og:description" content="שידורים ועדכונים | הפועל ירושלים אוהדים. basketball club website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="שידורים ועדכונים — הפועל ירושלים אוהדים">
+    <meta name="twitter:description" content="שידורים ועדכונים | הפועל ירושלים אוהדים. basketball club website">
+    <meta property="og:type" content="website">
+  <meta property="og:locale" content="he_IL">
+  
+  
+  
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .skip-link { position: absolute; top: 0; left: 0; transform: translateY(-200%); padding: 12px 18px; background: var(--bg-dark, #1a1a1a); color: var(--text-light, #fff); font-weight: 600; border-radius: 0 0 8px 0; z-index: 10000; }
+    .skip-link:focus { transform: none; outline: 2px solid var(--ring, #fff); outline-offset: 2px; }
+    :focus-visible { outline: 2px solid var(--ring, currentColor); outline-offset: 3px; }
+  </style>
+
+
+  
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon-48x48.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/assets/favicon-512x512.png">
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+    <!-- Cookie Consent -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanilla-cookieconsent@3/dist/cookieconsent.css">
+    <script src="https://cdn.jsdelivr.net/npm/vanilla-cookieconsent@3/dist/cookieconsent.umd.js"></script>
+    <!-- Mickidum Accessibility Toolbar -->
+    <script src="https://cdn.jsdelivr.net/gh/mickidum/acc_toolbar/acctoolbar/acctoolbar.min.js"></script>
+    <link rel="stylesheet" href="/styles.css">
+
+    <style id="zappy-dropdown-submenu-styles">
+      /* ========== DESKTOP DROPDOWN SUBMENU STYLES ========== */
+      /* Base styles for dropdown submenus - parent must be positioned */
+      .nav-menu li:has(.sub-menu), nav li:has(.sub-menu), .navbar li:has(.sub-menu), #navMenu li:has(.sub-menu) { position: relative; }
+      /* Submenu base - hidden by default */
+      .nav-menu .sub-menu, nav .sub-menu, .navbar .sub-menu, #navMenu .sub-menu { display: block !important; position: absolute !important; top: 100%; left: 0; min-width: 220px; background: white; border-radius: 8px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); padding: 8px 0; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.3s ease; z-index: 1000; list-style: none; pointer-events: none; }
+      /* CRITICAL: Desktop hover styles to show dropdown */
+      .nav-menu li:hover > .sub-menu, nav li:hover > .sub-menu, .navbar li:hover > .sub-menu, #navMenu li:hover > .sub-menu { opacity: 1 !important; visibility: visible !important; transform: translateY(0) !important; pointer-events: auto !important; }
+      /* Submenu item styling */
+      .sub-menu li { list-style: none; margin: 0; padding: 0; }
+      .sub-menu a { display: block !important; padding: 10px 16px !important; color: var(--text-dark, #333) !important; font-weight: 500; text-decoration: none; white-space: nowrap; transition: background-color 0.2s; }
+      .sub-menu .zappy-nav-child > a { padding-left: 28px !important; font-size: 0.9em !important; opacity: 0.85 !important; }
+      [dir="rtl"] .sub-menu .zappy-nav-child > a, html[lang="he"] .sub-menu .zappy-nav-child > a, html[lang="ar"] .sub-menu .zappy-nav-child > a { padding-left: 10px !important; padding-right: 28px !important; }
+      .sub-menu .zappy-nav-parent > a { font-weight: 600 !important; }
+      .sub-menu a:hover { background-color: #f5f5f5; }
+      /* RTL (Hebrew/Arabic) dropdown positioning */
+      [dir="rtl"] .nav-menu .sub-menu, [dir="rtl"] nav .sub-menu, [dir="rtl"] .navbar .sub-menu, html[lang="he"] .nav-menu .sub-menu, html[lang="he"] nav .sub-menu, html[lang="he"] .navbar .sub-menu, html[lang="ar"] .nav-menu .sub-menu, html[lang="ar"] nav .sub-menu, html[lang="ar"] .navbar .sub-menu { left: auto !important; right: 0 !important; }
+      /* Hide empty dropdown menus (exclude catalog sub-menus that use <a> children instead of <li>) */
+      .sub-menu:empty, .sub-menu:not(:has(li:not(.zappy-hidden-menu-item))):not(:has(> a)), .sub-menu:not(:has(li)):not(:has(> a)) { display: none !important; opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; }
+      /* Desktop: show submenu on Menu Group hover */
+      li:has(.menu-group-title):hover > .sub-menu { opacity: 1 !important; visibility: visible !important; transform: translateY(0) !important; pointer-events: auto !important; }
+      /* Menu Group title styling */
+      .nav-menu > li > .menu-group-title, #navMenu > li > .menu-group-title { display: inline-block; padding: 0.5rem 1rem; cursor: default; user-select: none; }
+      
+      /* ========== MOBILE SUBMENU STYLES ========== */
+      @media (max-width: 768px) {
+        .nav-menu .sub-menu, nav .sub-menu, .navbar .sub-menu, #navMenu .sub-menu { position: static !important; transform: none !important; box-shadow: none !important; background: transparent !important; max-height: 0; overflow: hidden; opacity: 0; visibility: hidden; transition: max-height 0.3s ease, opacity 0.3s ease; padding: 0 !important; border-radius: 0 !important; }
+        .navbar .sub-menu.mobile-expanded, .nav-menu .sub-menu.mobile-expanded, #navMenu .sub-menu.mobile-expanded { max-height: none !important; overflow-y: visible !important; opacity: 1 !important; visibility: visible !important; padding: 8px 0 8px 16px !important; }
+        [dir="rtl"] .sub-menu.mobile-expanded, html[lang="he"] .sub-menu.mobile-expanded { padding: 8px 16px 8px 0 !important; }
+        /* Disable hover behavior on mobile */
+        .nav-menu li:hover > .sub-menu, nav li:hover > .sub-menu, .navbar li:hover > .sub-menu, #navMenu li:hover > .sub-menu { opacity: 0; visibility: hidden; pointer-events: none; }
+        .nav-menu li > .sub-menu.mobile-expanded, nav li > .sub-menu.mobile-expanded, .navbar li > .sub-menu.mobile-expanded, #navMenu li > .sub-menu.mobile-expanded { opacity: 1 !important; visibility: visible !important; pointer-events: auto !important; }
+        .nav-menu li:has(.sub-menu), nav li:has(.sub-menu), .navbar li:has(.sub-menu), #navMenu li:has(.sub-menu) { display: flex !important; flex-wrap: wrap !important; align-items: center !important; position: relative !important; min-height: 44px !important; }
+        .nav-menu li:has(.sub-menu) > a, nav li:has(.sub-menu) > a, .navbar li:has(.sub-menu) > a, #navMenu li:has(.sub-menu) > a { flex: 1 !important; min-width: 0 !important; }
+        .nav-menu li:has(.sub-menu) > .menu-group-title, nav li:has(.sub-menu) > .menu-group-title, .navbar li:has(.sub-menu) > .menu-group-title, #navMenu li:has(.sub-menu) > .menu-group-title { flex: 1 !important; min-width: 0 !important; padding: 0 !important; line-height: inherit !important; }
+        .nav-menu li:has(.sub-menu) > .sub-menu, nav li:has(.sub-menu) > .sub-menu, .navbar li:has(.sub-menu) > .sub-menu, #navMenu li:has(.sub-menu) > .sub-menu { flex-basis: 100% !important; width: 100% !important; }
+        .nav-menu li:has(.sub-menu) > a [class*="chevron"], .nav-menu li:has(.sub-menu) > a [class*="arrow"], .nav-menu li:has(.sub-menu) > a .fa-chevron-down, .nav-menu li:has(.sub-menu) > a .fa-angle-down, nav li:has(.sub-menu) > a [class*="chevron"], nav li:has(.sub-menu) > a [class*="arrow"], #navMenu li:has(.sub-menu) > a [class*="chevron"], #navMenu li:has(.sub-menu) > a [class*="arrow"] { display: none !important; visibility: hidden !important; }
+        .mobile-submenu-toggle { display: flex !important; align-items: center !important; justify-content: center !important; width: 44px !important; height: auto !important; background: transparent !important; border: none !important; cursor: pointer !important; color: var(--text-light) !important; position: static !important; flex-shrink: 0 !important; align-self: stretch !important; z-index: 2 !important; padding: 0 !important; margin: 0 !important; }
+        .mobile-submenu-toggle::after { content: '' !important; width: 0 !important; height: 0 !important; border-left: 6px solid transparent !important; border-right: 6px solid transparent !important; border-top: 7px solid currentColor !important; transition: transform 0.3s ease !important; }
+        .mobile-submenu-toggle.expanded::after { transform: rotate(180deg) !important; }
+        .sub-menu a { padding: 10px 0 !important; display: block !important; color: var(--text-light) !important; white-space: normal !important; }
+        .sub-menu .zappy-nav-child > a { padding-left: 28px !important; font-size: 0.9em !important; opacity: 0.85 !important; }
+        [dir="rtl"] .sub-menu .zappy-nav-child > a, html[lang="he"] .sub-menu .zappy-nav-child > a, html[lang="ar"] .sub-menu .zappy-nav-child > a { padding-left: 0 !important; padding-right: 28px !important; }
+        .sub-menu .zappy-nav-parent > a { font-weight: 600 !important; }
+        .nav-menu.active, #navMenu.active { max-width: 100vw !important; overflow-x: hidden !important; box-sizing: border-box !important; }
+        .navbar .sub-menu li a, nav.navbar .sub-menu li a, .zappy-products-dropdown .sub-menu a { color: var(--text-light) !important; }
+      }
+      @media (min-width: 769px) { .mobile-submenu-toggle { display: none !important; } }
+    </style>
+
+    <style id="zappy-widget-visibility">
+      html[dir="rtl"] .whatsapp-float { right: 20px !important; left: auto !important; }
+      html[dir="ltr"] .whatsapp-float, html:not([dir]) .whatsapp-float { left: 20px !important; right: auto !important; }
+      html[dir="rtl"] #mic-access-tool-general-button, html[dir="rtl"] .mic-access-tool-general-button,
+      html[dir="rtl"] #mic-init-access-tool .mic-access-tool-general-button,
+      html[dir="rtl"] #mic-init-access-tool #mic-access-tool-general-button,
+      html[dir="rtl"] ._access-icon { left: 20px !important; right: auto !important; }
+      html[dir="ltr"] #mic-access-tool-general-button, html[dir="ltr"] .mic-access-tool-general-button,
+      html[dir="ltr"] #mic-init-access-tool .mic-access-tool-general-button,
+      html[dir="ltr"] #mic-init-access-tool #mic-access-tool-general-button,
+      html[dir="ltr"] ._access-icon,
+      html:not([dir]) #mic-access-tool-general-button, html:not([dir]) .mic-access-tool-general-button,
+      html:not([dir]) #mic-init-access-tool .mic-access-tool-general-button,
+      html:not([dir]) #mic-init-access-tool #mic-access-tool-general-button,
+      html:not([dir]) ._access-icon { right: 20px !important; left: auto !important; }
+      @media (max-width: 768px) { .whatsapp-float { display: flex !important; } }
+      @media (min-width: 769px) { .whatsapp-float { display: flex !important; } }
+      @media (max-width: 768px) {
+        #mic-access-tool-general-button, .mic-access-tool-general-button,
+        #mic-init-access-tool .mic-access-tool-general-button, #mic-init-access-tool #mic-access-tool-general-button,
+        ._access-icon { display: flex !important; visibility: visible !important; opacity: 1 !important; pointer-events: auto !important; }
+        #mic-access-tool-box.opened-mic-access-tool, .mic-access-tool-box.opened-mic-access-tool,
+        #mic-init-access-tool #mic-access-tool-box.opened-mic-access-tool {
+          visibility: visible !important; opacity: 1 !important; pointer-events: auto !important;
+        }
+      }
+      @media (min-width: 769px) {
+        #mic-access-tool-general-button, .mic-access-tool-general-button,
+        #mic-init-access-tool .mic-access-tool-general-button, #mic-init-access-tool #mic-access-tool-general-button,
+        ._access-icon { display: flex !important; visibility: visible !important; opacity: 1 !important; pointer-events: auto !important; }
+        #mic-access-tool-box.opened-mic-access-tool, .mic-access-tool-box.opened-mic-access-tool,
+        #mic-init-access-tool #mic-access-tool-box.opened-mic-access-tool {
+          visibility: visible !important; opacity: 1 !important; pointer-events: auto !important;
+        }
+      }
+    </style>
+</head>
+<body>
+<a class="skip-link" href="#main">דלג לתוכן הראשי</a>
+  <nav class="navbar" dir="rtl">
+  <button class="mobile-toggle" id="mobileToggle" aria-label="Menu">
+    <svg class="hamburger-icon" width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+    </svg>
+    <svg class="close-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" style="display: none;">
+      <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+    </svg>
+  </button>
+
+  <button class="phone-header-btn" data-phone="" aria-label="Call">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+    </svg>
+  </button>
+
+  <div class="nav-container">
+    <div class="nav-right-group"><div class="nav-brand">
+      <a href="/" class="logo-link"><img class="logo" src="/assets/site------------------image-1.webp" alt="הפועל ירושלים אוהדים"></a>
+    </div><ul class="nav-menu" id="navMenu"><li><a href="/">בית</a></li><li><a href="/schedule">לוח משחקים</a></li><li><a href="/broadcasts-updates">שידורים ועדכונים</a></li><li><a href="/club-fans">מועדון ואוהדים</a></li></ul></div>
+
+    
+
+    <div class="nav-cta-container">
+      <a href="/contact" class="nav-cta-btn">צור קשר</a>
+    </div>
+  </div>
+</nav>
+<script>
+
+// Navbar Mobile Menu Toggle and Contrast Fix
+(function() {
+  // Use 'load' event instead of 'DOMContentLoaded' to ensure we run AFTER all other scripts
+  window.addEventListener('load', function() {
+    
+    // FIX MOBILE BUTTON CONTRAST
+    // Detect navbar background color and apply contrasting color to mobile buttons
+    const navbar = document.querySelector('.navbar, nav, header');
+    if (!navbar) {
+      console.log('[Navbar] Navbar element not found');
+      return;
+    }
+    
+    // DECLARE VARIABLES EARLY to avoid Temporal Dead Zone errors
+    // These are used in multiple places below
+    let mobileToggle = document.getElementById('mobileToggle') ||
+                       document.querySelector('.mobile-toggle') ||
+                       document.querySelector('.hamburger') ||
+                       document.querySelector('.hamburger-menu') ||
+                       document.querySelector('.menu-toggle') ||
+                       document.querySelector('.burger-menu') ||
+                       document.querySelector('[aria-label="Menu"]') ||
+                       document.querySelector('[aria-label="תפריט"]');
+    
+    const phoneBtn = document.querySelector('.phone-header-btn');
+    
+    const computedStyle = window.getComputedStyle(navbar);
+    let bgColor = computedStyle.backgroundColor;
+    
+    console.log('[Navbar] Initial navbar background:', bgColor);
+    
+    // Check if background is transparent or rgba with 0 alpha
+    const isTransparent = bgColor === 'transparent' || 
+                         bgColor === 'rgba(0, 0, 0, 0)' ||
+                         (bgColor.startsWith('rgba') && bgColor.includes(', 0)'));
+    
+    if (isTransparent) {
+      // Check for background-image or gradient
+      const bgImage = computedStyle.backgroundImage;
+      if (bgImage && bgImage !== 'none') {
+        console.log('[Navbar] Navbar has background image/gradient, using dark text');
+        bgColor = 'rgb(240, 240, 240)'; // Assume light background
+      } else {
+        // Transparent navbar - check body background
+        const bodyBg = window.getComputedStyle(document.body).backgroundColor;
+        console.log('[Navbar] Navbar transparent, using body background:', bodyBg);
+        bgColor = bodyBg;
+      }
+    }
+    
+    // Calculate luminance to determine if background is light or dark
+    const rgb = bgColor.match(/\d+/g);
+    if (rgb && rgb.length >= 3) {
+      const r = parseInt(rgb[0]);
+      const g = parseInt(rgb[1]);
+      const b = parseInt(rgb[2]);
+      const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+      
+      // Mobile button colors are set by Claude's AI-generated CSS (same as .nav-menu a)
+      // No dynamic color overrides needed - colors come from the generated navbar CSS
+      console.log('[Navbar] Mobile button colors preserved from Claude CSS (luminance:', luminance.toFixed(2) + ')');
+      
+      // FIX ICON SIZES - Ensure SVGs are properly sized and visible
+      // INJECT CRITICAL CSS TO OVERRIDE ANY CONFLICTING RULES
+      const criticalCSS = document.createElement('style');
+      criticalCSS.id = 'zappy-mobile-nav-fix';
+      const htmlLang = document.documentElement.lang || 'en';
+      const htmlDir = document.documentElement.dir || 'ltr';
+      // Check both dir attribute AND lang for RTL detection
+      // dir="rtl" is the most reliable indicator
+      const isRTL = htmlDir === 'rtl' || htmlLang === 'he' || htmlLang === 'ar';
+      
+      criticalCSS.textContent = `
+        /* Hide mobile buttons on desktop, show only on mobile */
+        @media (min-width: 769px) {
+          .mobile-toggle,
+          .phone-header-btn {
+            display: none !important;
+          }
+        }
+        
+        /* Show and position mobile buttons correctly on mobile */
+        @media (max-width: 768px) {
+          .navbar,
+          nav.navbar {
+            min-height: 70px !important;
+          }
+
+          .mobile-toggle,
+          .phone-header-btn {
+            position: absolute !important;
+            top: 0 !important;
+            bottom: 0 !important;
+            margin-top: auto !important;
+            margin-bottom: auto !important;
+            transform: none !important;
+            z-index: 1001 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: 36px !important;
+            height: 36px !important;
+            border-radius: 50% !important;
+            border: none !important;
+            cursor: pointer !important;
+            padding: 6px !important;
+            background: none !important;
+            color: var(--nav-text, var(--text-light)) !important;
+            touch-action: manipulation !important;
+            -webkit-tap-highlight-color: transparent !important;
+          }
+
+          html[data-zappy-site-type="ecommerce"] .phone-header-btn,
+          body[data-zappy-site-type="ecommerce"] .phone-header-btn,
+          html[data-zappy-site-type="ecommerce"] header .phone-header-btn,
+          html[data-zappy-site-type="ecommerce"] nav .phone-header-btn {
+            display: none !important;
+            visibility: hidden !important;
+            width: 0 !important;
+            height: 0 !important;
+            min-width: 0 !important;
+            overflow: hidden !important;
+          }
+          
+          /* LTR positioning (default): hamburger LEFT, phone RIGHT */
+          html:not([dir="rtl"]):not([lang="he"]):not([lang="ar"]) .mobile-toggle,
+          html[dir="ltr"] .mobile-toggle {
+            left: 12px !important;
+            right: auto !important;
+          }
+          html:not([dir="rtl"]):not([lang="he"]):not([lang="ar"]) .phone-header-btn,
+          html[dir="ltr"] .phone-header-btn {
+            right: 12px !important;
+            left: auto !important;
+          }
+          
+          /* RTL positioning: hamburger RIGHT, phone LEFT */
+          html[dir="rtl"] .mobile-toggle,
+          html[lang="he"] .mobile-toggle,
+          html[lang="ar"] .mobile-toggle {
+            right: 12px !important;
+            left: auto !important;
+          }
+          html[dir="rtl"] .phone-header-btn,
+          html[lang="he"] .phone-header-btn,
+          html[lang="ar"] .phone-header-btn {
+            left: 12px !important;
+            right: auto !important;
+          }
+          
+          /* CRITICAL: Ensure nav-container has min-height on mobile */
+          /* All children are positioned absolutely/fixed on mobile, so height:auto collapses to 0 */
+          .nav-container {
+            min-height: 70px !important;
+            position: relative !important;
+          }
+          
+          /* Ensure SVG icons are properly sized and inherit color */
+          .mobile-toggle svg,
+          .phone-header-btn svg {
+            width: 24px !important;
+            height: 24px !important;
+            /* Don't force display - let JavaScript control hamburger/close toggle */
+          }
+          
+          /* Reset nav-cta-container on mobile - remove desktop box-shadow/padding */
+          /* that creates a visible ghost box when CTA button is hidden */
+          .nav-cta-container {
+            box-shadow: none !important;
+            padding: 0 !important;
+          }
+          
+          /* Hide nav-cta-container entirely on mobile when there's no lang-switcher */
+          /* (only the CTA button is inside, and it's hidden on mobile) */
+          .nav-cta-container:not(:has(.lang-switcher)) {
+            display: none !important;
+          }
+          
+          /* CRITICAL: Prevent hero image fade gradient from bleeding over headline text */
+          /* The .image-fade-gradient has bottom: -30px (extends below parent) */
+          /* On mobile stacked layout, this overlaps the h1 text below the image */
+          .hero-image-column {
+            overflow: hidden !important;
+          }
+          .image-fade-gradient {
+            bottom: 0 !important;
+          }
+          
+          /* Hide desktop language switcher on mobile - hamburger menu handles it */
+          /* High specificity to override stored CSS */
+          .lang-switcher,
+          .nav-cta-container .lang-switcher,
+          .nav-container .lang-switcher,
+          .navbar .lang-switcher,
+          .navbar .nav-cta-container .lang-switcher {
+            display: none !important;
+          }
+        }
+      `;
+      
+      // Remove existing fix if present and inject new one
+      const existing = document.getElementById('zappy-mobile-nav-fix');
+      if (existing) existing.remove();
+      document.head.appendChild(criticalCSS);
+      
+      console.log('[Navbar] Critical CSS injected for mobile nav positioning');
+      
+      // ONLY apply inline positioning styles on mobile viewport
+      // On desktop, the CSS handles hiding these buttons with display: none
+      // Inline styles were breaking desktop layout by overriding CSS
+      const isMobileViewport = window.innerWidth <= 768;
+      
+      if (mobileToggle) {
+        // Icon sizing applies to all viewports for consistency
+        const hamburgerIcon = mobileToggle.querySelector('.hamburger-icon');
+        const closeIcon = mobileToggle.querySelector('.close-icon');
+        
+        if (hamburgerIcon) {
+          hamburgerIcon.style.setProperty('width', '24px', 'important');
+          hamburgerIcon.style.setProperty('height', '24px', 'important');
+          hamburgerIcon.style.setProperty('display', 'block', 'important'); // Show hamburger by default
+        }
+        if (closeIcon) {
+          closeIcon.style.setProperty('width', '24px', 'important');
+          closeIcon.style.setProperty('height', '24px', 'important');
+          closeIcon.style.setProperty('display', 'none', 'important'); // Hide close icon by default
+        }
+        
+        // ONLY set positioning inline styles on mobile
+        if (isMobileViewport) {
+          mobileToggle.style.setProperty('position', 'absolute', 'important');
+          mobileToggle.style.setProperty('top', '0', 'important');
+          mobileToggle.style.setProperty('bottom', '0', 'important');
+          mobileToggle.style.setProperty('margin-top', 'auto', 'important');
+          mobileToggle.style.setProperty('margin-bottom', 'auto', 'important');
+          mobileToggle.style.setProperty('transform', 'none', 'important');
+          mobileToggle.style.setProperty('z-index', '1001', 'important');
+          
+          // Clear any inline left/right so CSS can take over based on html[dir]
+          mobileToggle.style.removeProperty('left');
+          mobileToggle.style.removeProperty('right');
+          
+          console.log('[Navbar] Mobile toggle positioning applied (mobile viewport)');
+        } else {
+          // On desktop, clear any positioning styles to let CSS handle it
+          mobileToggle.style.removeProperty('position');
+          mobileToggle.style.removeProperty('top');
+          mobileToggle.style.removeProperty('transform');
+          mobileToggle.style.removeProperty('z-index');
+          mobileToggle.style.removeProperty('left');
+          mobileToggle.style.removeProperty('right');
+          console.log('[Navbar] Desktop viewport - cleared mobile toggle inline positioning');
+        }
+      }
+      
+      if (phoneBtn) {
+        // Icon sizing applies to all viewports
+        const phoneIcon = phoneBtn.querySelector('svg');
+        if (phoneIcon) {
+          phoneIcon.style.width = '24px';
+          phoneIcon.style.height = '24px';
+          phoneIcon.setAttribute('width', '24');
+          phoneIcon.setAttribute('height', '24');
+        }
+        
+        // ONLY set positioning inline styles on mobile
+        if (isMobileViewport) {
+          phoneBtn.style.setProperty('position', 'absolute', 'important');
+          phoneBtn.style.setProperty('top', '0', 'important');
+          phoneBtn.style.setProperty('bottom', '0', 'important');
+          phoneBtn.style.setProperty('margin-top', 'auto', 'important');
+          phoneBtn.style.setProperty('margin-bottom', 'auto', 'important');
+          phoneBtn.style.setProperty('transform', 'none', 'important');
+          phoneBtn.style.setProperty('z-index', '1001', 'important');
+          
+          // Clear any inline left/right so CSS can take over based on html[dir]
+          phoneBtn.style.removeProperty('left');
+          phoneBtn.style.removeProperty('right');
+          
+          console.log('[Navbar] Phone button positioning applied (mobile viewport)');
+        } else {
+          // On desktop, clear any positioning styles to let CSS handle it
+          phoneBtn.style.removeProperty('position');
+          phoneBtn.style.removeProperty('top');
+          phoneBtn.style.removeProperty('transform');
+          phoneBtn.style.removeProperty('z-index');
+          phoneBtn.style.removeProperty('left');
+          phoneBtn.style.removeProperty('right');
+          console.log('[Navbar] Desktop viewport - cleared phone button inline positioning');
+        }
+      }
+    } else {
+      console.log('[Navbar] Could not parse background color:', bgColor);
+    }
+    
+    // MOBILE MENU TOGGLE
+    // Re-query in case DOM changed (mobileToggle already declared at top of function)
+    mobileToggle = document.getElementById('mobileToggle') ||
+                   document.querySelector('.mobile-toggle') ||
+                   document.querySelector('.hamburger') ||
+                   document.querySelector('.hamburger-menu') ||
+                   document.querySelector('.menu-toggle') ||
+                   document.querySelector('.burger-menu') ||
+                   document.querySelector('[aria-label="Menu"]') ||
+                   document.querySelector('[aria-label="תפריט"]');
+    
+    // EXPANDED SEARCH: Find nav menu by ID or class
+    const navMenu = document.getElementById('navMenu') ||
+                  document.querySelector('.nav-menu') ||
+                  document.querySelector('.nav-links') ||
+                  document.querySelector('nav ul:not(.submenu)');
+    
+    if (!mobileToggle || !navMenu) {
+      console.log('[Navbar] Mobile toggle or menu not found:', { toggle: !!mobileToggle, menu: !!navMenu });
+      return;
+    }
+    
+    // Ensure navMenu has ID for CSS targeting
+    if (!navMenu.id) {
+      navMenu.id = 'navMenu';
+    }
+    
+    console.log('[Navbar] Initializing mobile menu...');
+    
+    // Remove any existing event listeners by cloning the button
+    const newToggle = mobileToggle.cloneNode(true);
+    mobileToggle.parentNode.replaceChild(newToggle, mobileToggle);
+    
+    // Toggle menu handler (shared by click and touchend)
+    function handleToggle(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      const hamburgerIcon = newToggle.querySelector('.hamburger-icon');
+      const closeIcon = newToggle.querySelector('.close-icon');
+      const isActive = navMenu.classList.contains('active');
+      
+      if (isActive) {
+        // Close menu
+        navMenu.classList.remove('active');
+        if (hamburgerIcon) hamburgerIcon.style.setProperty('display', 'block', 'important');
+        if (closeIcon) closeIcon.style.setProperty('display', 'none', 'important');
+        document.body.style.overflow = '';
+        console.log('[Navbar] Menu closed');
+      } else {
+        // Open menu
+        navMenu.classList.add('active');
+        if (hamburgerIcon) hamburgerIcon.style.setProperty('display', 'none', 'important');
+        if (closeIcon) closeIcon.style.setProperty('display', 'block', 'important');
+        document.body.style.overflow = 'hidden';
+        console.log('[Navbar] Menu opened');
+      }
+    }
+    
+    // Use click for desktop/emulation and touchend as iOS Safari fallback.
+    // Prevent double-fire with a timestamp guard.
+    var lastToggleTime = 0;
+    function guardedToggle(e) {
+      var now = Date.now();
+      if (now - lastToggleTime < 300) return;
+      lastToggleTime = now;
+      handleToggle(e);
+    }
+    
+    newToggle.addEventListener('click', guardedToggle);
+    newToggle.addEventListener('touchend', guardedToggle);
+    
+    // Close menu when clicking nav links (but NOT dropdown toggles)
+    const navLinks = navMenu.querySelectorAll('a');
+    navLinks.forEach(function(link) {
+      link.addEventListener('click', function() {
+        // Don't close if it's a dropdown child (unless it's a real navigation link)
+        if (this.getAttribute('href') === '#') return;
+        
+        const hamburgerIcon = newToggle.querySelector('.hamburger-icon');
+        const closeIcon = newToggle.querySelector('.close-icon');
+        
+        navMenu.classList.remove('active');
+        if (hamburgerIcon) hamburgerIcon.style.setProperty('display', 'block', 'important');
+        if (closeIcon) closeIcon.style.setProperty('display', 'none', 'important');
+        document.body.style.overflow = '';
+        console.log('[Navbar] Menu closed (link clicked)');
+      });
+    });
+    
+    // DROPDOWN MENU TOGGLE (for mobile and touch devices)
+    var dropdownToggles = navMenu.querySelectorAll('.dropdown-toggle');
+    dropdownToggles.forEach(function(toggle) {
+      toggle.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var parent = this.closest('.nav-dropdown');
+        if (!parent) return;
+        
+        // Close other open dropdowns at the same level
+        var siblings = parent.parentNode.querySelectorAll('.nav-dropdown.open');
+        siblings.forEach(function(sib) {
+          if (sib !== parent) sib.classList.remove('open');
+        });
+        
+        parent.classList.toggle('open');
+        console.log('[Navbar] Dropdown toggled:', parent.classList.contains('open') ? 'open' : 'closed');
+      });
+    });
+    
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.nav-dropdown')) {
+        var openDropdowns = document.querySelectorAll('.nav-dropdown.open');
+        openDropdowns.forEach(function(dd) { dd.classList.remove('open'); });
+      }
+    });
+    
+    console.log('[Navbar] Dropdown handlers initialized for ' + dropdownToggles.length + ' dropdowns');
+    
+    // Phone button functionality (phoneBtn already declared at top of function)
+    if (phoneBtn) {
+      phoneBtn.addEventListener('click', function() {
+        // Get phone number from placeholder in page or use default
+        const phoneLinks = document.querySelectorAll('a[href^="tel:"]');
+        const phoneNumber = phoneLinks.length > 0 
+          ? phoneLinks[0].getAttribute('href').replace('tel:', '')
+          : '[business_phone]';
+        
+        window.location.href = 'tel:' + phoneNumber;
+        console.log('[Navbar] Phone button clicked');
+      });
+    }
+    
+    console.log('[Navbar] Mobile menu initialized successfully');
+    
+    // WhatsApp button visibility is now controlled via CSS (siteSettings).
+    // No JS-based desktop hiding — the button is visible on both mobile and desktop by default.
+  });
+})();
+
+</script>
+  
+  <main id="main">
+    <section class="broadcasts-updates-hero-banner-section" data-layout-spec="שידורים ועדכונים-hero-banner" dir="rtl">
+
+  <!-- Broadcast grid texture overlay -->
+  <div class="buhb-grid-texture" aria-hidden="true"></div>
+
+  <!-- Red vignette overlay -->
+  <div class="buhb-vignette" aria-hidden="true"></div>
+
+  <!-- Full-width visual strip -->
+  <div class="buhb-visual-strip">
+    <img loading="eager" fetchpriority="high" data-placeholder="broadcasts-updates-hero-banner-image-1" data-context="Wide cinematic panoramic shot of Hapoel Jerusalem basketball arena during a live match night — packed crowd with red scarves and flags, dramatic stadium lighting with warm amber and deep red tones, players mid-action on court, broadcast cameras visible, intense atmosphere, rich burgundy color grade, motion blur on crowd, Israeli basketball club atmosphere" width="1440" height="520" src="/assets/site-broadcasts-updates-hero-banner-image-1.webp" alt="אצטדיון הפועל ירושלים במהלך משחק חי — קהל נלהב, תאורה דרמטית ואווירת שידור">
+    <!-- Gradient scrim over image -->
+    <div class="buhb-strip-scrim" aria-hidden="true"></div>
+    <!-- Live badge -->
+    <div class="buhb-live-badge" aria-hidden="false">
+      <span class="buhb-live-dot" aria-hidden="true"></span>
+      <span>LIVE</span>
+    </div>
+  </div>
+
+  <!-- Main content block -->
+  <div class="buhb-content-wrapper">
+    <div class="buhb-container">
+
+      <!-- Text & CTA anchored to start (right in RTL) -->
+      <div class="buhb-text-block">
+
+        <!-- Section label -->
+        <p class="buhb-label">
+          <svg data-no-icon-edit="true" aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:inline-block;vertical-align:middle;margin-inline-end:6px;">
+            <polygon points="6,0 7.5,4.5 12,4.5 8.5,7 10,12 6,9 2,12 3.5,7 0,4.5 4.5,4.5" fill="#CC1A1A"></polygon>
+          </svg>
+          שידורים ועדכונים רשמיים
+          <svg data-no-icon-edit="true" aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:inline-block;vertical-align:middle;margin-inline-start:6px;">
+            <polygon points="6,0 7.5,4.5 12,4.5 8.5,7 10,12 6,9 2,12 3.5,7 0,4.5 4.5,4.5" fill="#CC1A1A"></polygon>
+          </svg>
+        </p>
+
+        <h1 class="buhb-title">שידורי הפועל ירושלים<br><em>ישירות אליך</em></h1>
+
+        <p class="buhb-subtitle">עקוב אחר כל מה שקורה עם הפועל ירושלים — שידורים חיים, עדכונים ביום המשחק, הודעות רשמיות מהמועדון וכיסוי מלא של כל מה שחשוב לאוהדים האמיתיים.</p>
+
+        <div class="buhb-cta-row">
+          <a href="/contact" class="buhb-btn-primary">
+            <i class="fa fa-envelope" aria-hidden="true"></i>
+            צור קשר עם המועדון
+          </a>
+        </div>
+      </div>
+
+      <!-- Three-point summary row -->
+      <div class="buhb-summary-row">
+
+        <div class="buhb-summary-item">
+          <div class="buhb-summary-icon">
+            <svg data-element-type="icon" data-icon-type="svg" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="2"></circle>
+              <circle cx="14" cy="14" r="4" fill="currentColor"></circle>
+              <line x1="14" y1="2" x2="14" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+              <line x1="14" y1="22" x2="14" y2="26" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+              <line x1="2" y1="14" x2="6" y2="14" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+              <line x1="22" y1="14" x2="26" y2="14" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+            </svg>
+          </div>
+          <div class="buhb-summary-content">
+            <h3 class="buhb-summary-title">שידורים חיים</h3>
+            <p class="buhb-summary-desc">כיסוי שידור מלא של משחקי הליגה, גביע המדינה ותחרויות אירופה — ישירות מהמגרש.</p>
+          </div>
+        </div>
+
+        <div class="buhb-summary-item">
+          <div class="buhb-summary-icon">
+            <svg data-element-type="icon" data-icon-type="svg" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect x="3" y="5" width="22" height="18" rx="2" stroke="currentColor" stroke-width="2"></rect>
+              <line x1="3" y1="11" x2="25" y2="11" stroke="currentColor" stroke-width="2"></line>
+              <line x1="9" y1="5" x2="9" y2="11" stroke="currentColor" stroke-width="2"></line>
+              <line x1="19" y1="5" x2="19" y2="11" stroke="currentColor" stroke-width="2"></line>
+              <rect x="7" y="15" width="4" height="4" rx="1" fill="currentColor"></rect>
+              <rect x="17" y="15" width="4" height="4" rx="1" fill="currentColor"></rect>
+            </svg>
+          </div>
+          <div class="buhb-summary-content">
+            <h3 class="buhb-summary-title">עדכוני יום משחק</h3>
+            <p class="buhb-summary-desc">הרכב ההתחלה, שינויים אחרונים, מידע על כניסה לאצטדיון וכל מה שצריך לדעת לפני הקבוצה.</p>
+          </div>
+        </div>
+
+        <div class="buhb-summary-item">
+          <div class="buhb-summary-icon">
+            <svg data-element-type="icon" data-icon-type="svg" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M14 3 L17 9 L24 10 L19 15 L20 22 L14 19 L8 22 L9 15 L4 10 L11 9 Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" fill="none"></path>
+              <circle cx="14" cy="14" r="3" fill="currentColor"></circle>
+            </svg>
+          </div>
+          <div class="buhb-summary-content">
+            <h3 class="buhb-summary-title">הודעות רשמיות</h3>
+            <p class="buhb-summary-desc">הצהרות מהנהלת המועדון, חדשות העברות, עדכוני שחקנים וכל ההודעות הרשמיות מהפועל ירושלים.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom scanline fade divider -->
+  <div class="buhb-divider-wrapper" aria-hidden="true">
+    <svg data-no-icon-edit="true" aria-hidden="true" viewBox="0 0 1440 70" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,70 L0,20 Q120,28 240,18 T480,22 Q600,16 720,24 T960,18 Q1080,24 1200,16 T1440,22 L1440,70 Z" fill="#F0EAE0"></path>
+    </svg>
+  </div>
+
+</section>
+
+<section class="broadcasts-updates-coverage-section" data-layout-spec="שידורים ועדכונים-coverage" dir="rtl">
+  <div class="bucs-container">
+    <div class="bucs-header">
+      <div class="bucs-star-accent" aria-hidden="true">
+        <svg data-no-icon-edit="true" aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><polygon points="7,0 8.76,4.9 14,5.27 10.06,8.56 11.35,13.73 7,11 2.65,13.73 3.94,8.56 0,5.27 5.24,4.9" fill="var(--accent)"></polygon></svg>
+      </div>
+      <h2 class="bucs-title">סיקור מלא של הפועל ירושלים</h2>
+      <div class="bucs-star-accent bucs-star-end" aria-hidden="true">
+        <svg data-no-icon-edit="true" aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><polygon points="7,0 8.76,4.9 14,5.27 10.06,8.56 11.35,13.73 7,11 2.65,13.73 3.94,8.56 0,5.27 5.24,4.9" fill="var(--accent)"></polygon></svg>
+      </div>
+      <p class="bucs-subtitle">מהכנה למשחק ועד לסיכום הניצחון — כל מה שאוהד הפועל ירושלים צריך לדעת, במקום אחד</p>
+      <div class="bucs-rule" aria-hidden="true"></div>
+    </div>
+
+    <div class="bucs-grid">
+
+      <!-- Card 1: Pre-game -->
+      <article class="bucs-card">
+        <div class="bucs-card-image-wrap">
+          <img loading="lazy" decoding="async" data-placeholder="broadcasts-updates-coverage-image-1" data-context="Hapoel Jerusalem basketball players in a pre-game locker room huddle, intense preparation atmosphere, red and black team colors, dramatic lighting, Israeli basketball club editorial photography" width="600" height="400" src="/assets/site-broadcasts-updates-coverage-image-1.webp" alt="שחקני הפועל ירושלים בהכנה לקראת המשחק" class="bucs-card-img">
+          <span class="bucs-card-tag">לפני המשחק</span>
+        </div>
+        <div class="bucs-card-body">
+          <div class="bucs-card-accent-line" aria-hidden="true"></div>
+          <h3 class="bucs-card-title">חדשות וסגל לפני המשחק</h3>
+          <p class="bucs-card-text">עדכוני הסגל, ניתוח הכנות האימון, ומידע על שחקנים לפני כל מפגש. קבלו את כל הפרטים על ההרכב הצפוי, מצב הבריאות של השחקנים, ואסטרטגיית הקבוצה — ישירות מהמקור הרשמי.</p>
+          <a href="#" class="bucs-card-link">לחדשות הסגל <span aria-hidden="true">←</span></a>
+        </div>
+      </article>
+
+      <!-- Card 2: Game-day broadcast -->
+      <article class="bucs-card bucs-card--featured">
+        <div class="bucs-card-image-wrap">
+          <img loading="lazy" decoding="async" data-placeholder="broadcasts-updates-coverage-image-2" data-context="Live basketball broadcast screen showing Hapoel Jerusalem game in action, arena packed with fans holding red banners, scoreboard visible, broadcast graphics overlay, dramatic game moment photography" width="600" height="400" src="/assets/site-broadcasts-updates-coverage-image-2.webp" alt="שידור חי של משחק הפועל ירושלים" class="bucs-card-img">
+          <span class="bucs-card-tag bucs-card-tag--live">שידור חי</span>
+        </div>
+        <div class="bucs-card-body">
+          <div class="bucs-card-accent-line" aria-hidden="true"></div>
+          <h3 class="bucs-card-title">שידורי יום המשחק</h3>
+          <p class="bucs-card-text">מידע מלא על ערוצי השידור, שעות הקיקאוף, ופרטי הצפייה לכל משחק של הפועל ירושלים. בין אם אתם בארנה או עוקבים מהבית — אנחנו מוודאים שלא תפספסו רגע אחד מהפעולה.</p>
+          <a href="#" class="bucs-card-link">לפרטי השידור <span aria-hidden="true">←</span></a>
+        </div>
+      </article>
+
+      <!-- Card 3: Post-game recap -->
+      <article class="bucs-card">
+        <div class="bucs-card-image-wrap">
+          <img loading="lazy" decoding="async" data-placeholder="broadcasts-updates-coverage-image-3" data-context="Hapoel Jerusalem basketball players celebrating a victory on court, fans erupting in the stands, red confetti, players embracing, post-game euphoria, Israeli basketball championship moment" width="600" height="400" src="/assets/site-broadcasts-updates-coverage-image-3.webp" alt="חגיגות הפועל ירושלים לאחר ניצחון" class="bucs-card-img">
+          <span class="bucs-card-tag">אחרי המשחק</span>
+        </div>
+        <div class="bucs-card-body">
+          <div class="bucs-card-accent-line" aria-hidden="true"></div>
+          <h3 class="bucs-card-title">סיכומים והיילייטים רשמיים</h3>
+          <p class="bucs-card-text">סיכומי משחק מפורטים, קטעי ההיילייטים הרשמיים של הקבוצה, ותגובות ישירות מהשחקנים והסגל. תוכן עדכני ממנהל הקבוצה לאחר כל משחק — כי כל ניצחון ראוי לסיקור מלא.</p>
+          <a href="#" class="bucs-card-link">לסיכומי המשחקים <span aria-hidden="true">←</span></a>
+        </div>
+      </article>
+
+    </div>
+  </div>
+
+  <!-- Bottom diagonal divider -->
+  <div class="bucs-divider-wrapper" aria-hidden="true">
+    <svg data-no-icon-edit="true" aria-hidden="true" viewBox="0 0 1440 72" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="0,72 1440,0 1440,72" fill="#2D1010"></polygon>
+    </svg>
+  </div>
+</section>
+
+<section class="broadcasts-updates-editorial-section" data-layout-spec="שידורים ועדכונים-editorial" dir="rtl">
+
+  <!-- Grain texture overlay -->
+  <div class="bue-grain-overlay" aria-hidden="true"></div>
+
+  <!-- Section Header -->
+  <div class="bue-container">
+    <header class="bue-section-header">
+      <div class="bue-header-eyebrow">
+        <svg data-no-icon-edit="true" aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><polygon points="7,0 8.8,5.2 14,5.2 9.6,8.4 11.4,13.6 7,10.4 2.6,13.6 4.4,8.4 0,5.2 5.2,5.2" fill="var(--accent)"></polygon></svg>
+        <span>חדשות ועדכונים</span>
+        <svg data-no-icon-edit="true" aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><polygon points="7,0 8.8,5.2 14,5.2 9.6,8.4 11.4,13.6 7,10.4 2.6,13.6 4.4,8.4 0,5.2 5.2,5.2" fill="var(--accent)"></polygon></svg>
+      </div>
+      <h2 class="bue-section-title">מישרת הקבוצה</h2>
+      <div class="bue-header-rule" aria-hidden="true"></div>
+    </header>
+
+    <!-- FEATURED STORY -->
+    <article class="bue-story bue-story--featured">
+      <figure class="bue-story-figure bue-story-figure--featured">
+        <img loading="lazy" decoding="async" data-placeholder="broadcasts-updates-editorial-image-1" data-context="Hapoel Jerusalem basketball player signing a contract or shaking hands with the club manager in a professional office setting, dramatic lighting, deep red and dark tones, Israeli basketball club atmosphere" width="720" height="405" src="/assets/site-broadcasts-updates-editorial-image-1.webp" alt="חתימת שחקן חדש להפועל ירושלים" class="bue-story-img">
+        <div class="bue-story-img-overlay" aria-hidden="true"></div>
+        <span class="bue-story-category">סגל הקבוצה</span>
+      </figure>
+      <div class="bue-story-content bue-story-content--featured">
+        <div class="bue-story-meta">
+          <time class="bue-story-date">15 ביוני 2025</time>
+          <span class="bue-meta-dot" aria-hidden="true">·</span>
+          <span class="bue-story-read">4 דקות קריאה</span>
+        </div>
+        <h3 class="bue-story-title bue-story-title--featured">הפועל ירושלים מכריזה על גיוס מרכזי חדש לעונת 2025–26</h3>
+        <p class="bue-story-excerpt">הקבוצה סגרה עסקה מרגשת להבאת מרכז אמריקאי בגובה 2.10 מטר עם ניסיון עשיר בליגות אירופה. המנהל הספורטיבי הצהיר כי מדובר בחיזוק משמעותי לקראת הקרבות בליגת האלופות. האוהדים מוזמנים לאירוע קבלת הפנים ביום ראשון הקרוב בגן-לב.</p>
+        <a href="/contact" class="bue-story-link">
+          <span>קרא עוד</span>
+          <svg data-element-type="icon" data-icon-type="svg" aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 8H3M7 5L4 8L7 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        </a>
+      </div>
+    </article>
+
+    <div class="bue-divider" aria-hidden="true"></div>
+
+    <!-- STORY LIST -->
+    <div class="bue-story-list">
+
+      <!-- Story 2 -->
+      <article class="bue-story bue-story--list">
+        <figure class="bue-story-figure bue-story-figure--list">
+          <img loading="lazy" decoding="async" data-placeholder="broadcasts-updates-editorial-image-2" data-context="Hapoel Jerusalem basketball team training session on the court, players practicing drills, coach giving instructions, intense athletic atmosphere, warm gymnasium lighting with red and dark color tones" width="280" height="180" src="/assets/site-broadcasts-updates-editorial-image-2.webp" alt="אימון הפועל ירושלים" class="bue-story-img">
+          <div class="bue-story-img-overlay" aria-hidden="true"></div>
+          <span class="bue-story-category">אימונים</span>
+        </figure>
+        <div class="bue-story-content">
+          <div class="bue-story-meta">
+            <time class="bue-story-date">12 ביוני 2025</time>
+            <span class="bue-meta-dot" aria-hidden="true">·</span>
+            <span class="bue-story-read">2 דקות קריאה</span>
+          </div>
+          <h3 class="bue-story-title">מחנה האימונים הקיצי נפתח: הקבוצה מתחילה הכנות מוקדמות</h3>
+          <p class="bue-story-excerpt">שחקני הפועל ירושלים חזרו למגרש השבוע לאחר ההפסקה הקצרה, עם דגש על כושר גופני ועבודת הגנה קבוצתית. המאמן הראשי ציין כי הצוות מגיע עם רעב גדול לעונה החדשה.</p>
+          <a href="/contact" class="bue-story-link">
+            <span>קרא עוד</span>
+            <svg data-element-type="icon" data-icon-type="svg" aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 8H3M7 5L4 8L7 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          </a>
+        </div>
+      </article>
+
+      <div class="bue-divider" aria-hidden="true"></div>
+
+      <!-- Story 3 -->
+      <article class="bue-story bue-story--list">
+        <figure class="bue-story-figure bue-story-figure--list">
+          <img loading="lazy" decoding="async" data-placeholder="broadcasts-updates-editorial-image-3" data-context="Hapoel Jerusalem head basketball coach speaking at a press conference, microphone in front, serious confident expression, club logo banner visible in background, dramatic studio lighting" width="280" height="180" src="/assets/site-broadcasts-updates-editorial-image-3.webp" alt="הצהרת המאמן הראשי של הפועל ירושלים" class="bue-story-img">
+          <div class="bue-story-img-overlay" aria-hidden="true"></div>
+          <span class="bue-story-category">הצהרות</span>
+        </figure>
+        <div class="bue-story-content">
+          <div class="bue-story-meta">
+            <time class="bue-story-date">10 ביוני 2025</time>
+            <span class="bue-meta-dot" aria-hidden="true">·</span>
+            <span class="bue-story-read">3 דקות קריאה</span>
+          </div>
+          <h3 class="bue-story-title">המאמן: "המטרה שלנו ברורה — הגביע חוזר לירושלים"</h3>
+          <p class="bue-story-excerpt">בכנס עיתונאים שנערך אמש, הצהיר המאמן הראשי על יעדי הקבוצה לעונה הקרובה. לדבריו, הסגל הנוכחי הוא המחויב ביותר שהוביל מאז הגיע לתפקיד, ואוהדי הפועל יהיו גאים.</p>
+          <a href="/contact" class="bue-story-link">
+            <span>קרא עוד</span>
+            <svg data-element-type="icon" data-icon-type="svg" aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 8H3M7 5L4 8L7 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          </a>
+        </div>
+      </article>
+
+      <div class="bue-divider" aria-hidden="true"></div>
+
+      <!-- Story 4 -->
+      <article class="bue-story bue-story--list">
+        <figure class="bue-story-figure bue-story-figure--list">
+          <img loading="lazy" decoding="async" data-placeholder="broadcasts-updates-editorial-image-4" data-context="Hapoel Jerusalem basketball club community event, players visiting children in Jerusalem neighborhood, smiling fans getting autographs, warm community atmosphere, red club jerseys visible" width="280" height="180" src="/assets/site-broadcasts-updates-editorial-image-4.webp" alt="פעילות קהילתית של הפועל ירושלים" class="bue-story-img">
+          <div class="bue-story-img-overlay" aria-hidden="true"></div>
+          <span class="bue-story-category">קהילה</span>
+        </figure>
+        <div class="bue-story-content">
+          <div class="bue-story-meta">
+            <time class="bue-story-date">8 ביוני 2025</time>
+            <span class="bue-meta-dot" aria-hidden="true">·</span>
+            <span class="bue-story-read">2 דקות קריאה</span>
+          </div>
+          <h3 class="bue-story-title">שחקני הפועל ירושלים ביקרו ילדים בשכונות הבירה</h3>
+          <p class="bue-story-excerpt">במסגרת יוזמת "כדורסל לכולם", ביקרו שישה שחקנים מהסגל הראשון בית ספר יסודי בגילה וניהלו מפגש השראה מרגש. הפעילות הקהילתית של הפועל ירושלים ממשיכה לחזק את הקשר עם אוהדי הקבוצה.</p>
+          <a href="/contact" class="bue-story-link">
+            <span>קרא עוד</span>
+            <svg data-element-type="icon" data-icon-type="svg" aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 8H3M7 5L4 8L7 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          </a>
+        </div>
+      </article>
+
+    </div>
+    <!-- /story list -->
+
+    <!-- Footer CTA -->
+    <div class="bue-footer-cta">
+      <a href="/contact" class="btn-primary bue-cta-btn">
+        <span>כל העדכונים</span>
+        <svg data-element-type="icon" data-icon-type="svg" aria-hidden="true" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11 9H3M8 5.5L4 9L8 12.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </a>
+    </div>
+
+  </div>
+  <!-- /container -->
+
+  <!-- Bottom spotlight gradient + torn-grain divider -->
+  <div class="bue-bottom-divider-wrapper" aria-hidden="true">
+    <svg data-no-icon-edit="true" aria-hidden="true" viewBox="0 0 1280 90" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,90 L0,48 Q40,42 80,50 T160,44 Q210,50 260,42 T360,48 Q410,42 460,50 T560,44 Q610,50 660,42 T760,48 Q810,44 860,50 T960,44 Q1010,50 1060,42 T1160,48 Q1200,44 1240,50 L1280,46 L1280,90 Z" fill="#F0EAE0"></path>
+    </svg>
+  </div>
+
+</section>
+
+<section class="broadcasts-updates-media-mosaic-section" data-layout-spec="שידורים ועדכונים-media-mosaic" dir="rtl">
+  <div class="mosaic-container">
+
+    <!-- Section Header -->
+    <div class="mosaic-header">
+      <div class="mosaic-header-inner">
+        <span class="star-accent" aria-hidden="true">
+          <svg data-no-icon-edit="true" aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 0L9.8 5.5H15.6L11 8.9L12.8 14.4L8 11L3.2 14.4L5 8.9L0.4 5.5H6.2L8 0Z" fill="var(--accent)"></path></svg>
+        </span>
+        <h2 class="mosaic-title">רגעים מהמגרש ומהשידור</h2>
+        <span class="star-accent" aria-hidden="true">
+          <svg data-no-icon-edit="true" aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 0L9.8 5.5H15.6L11 8.9L12.8 14.4L8 11L3.2 14.4L5 8.9L0.4 5.5H6.2L8 0Z" fill="var(--accent)"></path></svg>
+        </span>
+      </div>
+      <p class="mosaic-subtitle">סיקור, תמונות ורגשות — הפועל ירושלים בשידורים ועדכונים</p>
+    </div>
+
+    <!-- Mosaic Grid -->
+    <div class="mosaic-grid">
+
+      <!-- Tile 1: Large image top-right -->
+      <div class="mosaic-tile tile-img tile-large">
+        <div class="tile-img-wrapper">
+          <img loading="lazy" decoding="async" data-placeholder="broadcasts-updates-media-mosaic-image-1" data-context="Hapoel Jerusalem basketball players celebrating on court during a high-intensity game, crowd cheering in the background, dramatic arena lighting, red and black team colors, official basketball game atmosphere in Jerusalem" width="600" height="400" src="/assets/site-broadcasts-updates-media-mosaic-image-1.webp" alt="שחקני הפועל ירושלים חוגגים במגרש">
+          <div class="tile-img-overlay"></div>
+          <div class="tile-img-badge">
+            <i class="fa fa-video" aria-hidden="true"></i>
+            <span>שידור חי</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tile 2: Quote/text tile -->
+      <div class="mosaic-tile tile-quote tile-accent">
+        <div class="quote-inner">
+          <div class="quote-icon" aria-hidden="true">
+            <svg data-element-type="icon" data-icon-type="svg" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 8C4 6.9 4.9 6 6 6H14C15.1 6 16 6.9 16 8V16C16 17.1 15.1 18 14 18H10L8 22V18H6C4.9 18 4 17.1 4 16V8Z" fill="rgba(255,255,255,0.25)"></path><path d="M18 12C18 10.9 18.9 10 20 10H26C27.1 10 28 10.9 28 12V18C28 19.1 27.1 20 26 20H24L22 24V20H20C18.9 20 18 19.1 18 18V12Z" fill="rgba(255,255,255,0.15)"></path></svg>
+          </div>
+          <blockquote class="quote-text">"הקהל בירושלים הוא הלב הפועם של הקבוצה — בכל שידור, בכל משחק"</blockquote>
+          <cite class="quote-source">— כתב ספורט, ערוץ הספורט</cite>
+        </div>
+      </div>
+
+      <!-- Tile 3: Medium image -->
+      <div class="mosaic-tile tile-img tile-medium">
+        <div class="tile-img-wrapper">
+          <img loading="lazy" decoding="async" data-placeholder="broadcasts-updates-media-mosaic-image-2" data-context="Packed arena crowd at a Hapoel Jerusalem basketball game, fans holding red scarves and banners, electric atmosphere, stadium lights, passionate supporters" width="400" height="300" src="/assets/site-broadcasts-updates-media-mosaic-image-2.webp" alt="קהל אוהדי הפועל ירושלים בזירה">
+          <div class="tile-img-overlay"></div>
+          <div class="tile-img-badge tile-badge-dark">
+            <i class="fa fa-users" aria-hidden="true"></i>
+            <span>האוהדים</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tile 4: Coverage highlight text tile -->
+      <div class="mosaic-tile tile-text tile-coverage">
+        <div class="coverage-inner">
+          <div class="coverage-label">
+            <span class="coverage-dot" aria-hidden="true"></span>
+            <span>כיסוי תקשורתי</span>
+          </div>
+          <h3 class="coverage-headline">שידורי הפועל ירושלים בכל הפלטפורמות</h3>
+          <p class="coverage-body">צפו בכל משחקי הבית והחוץ בשידור חי — בטלוויזיה, בסטרימינג ובעדכונים בזמן אמת. לא מפספסים רגע.</p>
+          <div class="coverage-tags">
+            <span class="coverage-tag">טלוויזיה</span>
+            <span class="coverage-tag">סטרימינג</span>
+            <span class="coverage-tag">רדיו</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tile 5: Image with halftone corner -->
+      <div class="mosaic-tile tile-img tile-medium tile-halftone">
+        <div class="tile-img-wrapper">
+          <img loading="lazy" decoding="async" data-placeholder="broadcasts-updates-media-mosaic-image-3" data-context="Hapoel Jerusalem basketball player making a dramatic slam dunk or three-pointer shot, action photography, red jersey, arena crowd visible in background, high energy sports moment" width="400" height="300" src="/assets/site-broadcasts-updates-media-mosaic-image-3.webp" alt="שחקן הפועל ירושלים בפעולה">
+          <div class="tile-img-overlay"></div>
+          <div class="halftone-corner" aria-hidden="true"></div>
+        </div>
+      </div>
+
+      <!-- Tile 6: Stats/highlight text tile -->
+      <div class="mosaic-tile tile-text tile-stats">
+        <div class="stats-inner">
+          <div class="stats-row">
+            <div class="stat-item">
+              <span class="stat-number">18+</span>
+              <span class="stat-label">שידורים בעונה</span>
+            </div>
+            <div class="stat-divider" aria-hidden="true"></div>
+            <div class="stat-item">
+              <span class="stat-number">100K+</span>
+              <span class="stat-label">צופים בממוצע</span>
+            </div>
+          </div>
+          <div class="stats-quote">
+            <p>"ירושלים לא רק משחקת — ירושלים מופיעה"</p>
+          </div>
+          <div class="stats-img-thumb">
+            <img loading="lazy" decoding="async" data-placeholder="broadcasts-updates-media-mosaic-image-4" data-context="Hapoel Jerusalem basketball team huddle before a game, coach and players together, red uniforms, intense focus, team spirit, Jerusalem arena background" width="200" height="120" src="/assets/site-broadcasts-updates-media-mosaic-image-4.webp" alt="שחקני הפועל ירושלים לפני המשחק">
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <!-- End Mosaic Grid -->
+
+  </div>
+
+  <!-- Scarf Fringe Divider -->
+  <div class="mosaic-fringe-wrapper">
+    <svg data-no-icon-edit="true" aria-hidden="true" viewBox="0 0 1200 56" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Fringe base bar -->
+      <rect x="0" y="0" width="1200" height="16" fill="var(--primary)"></rect>
+      <rect x="0" y="0" width="1200" height="8" fill="var(--accent)" opacity="0.6"></rect>
+      <!-- Fringe tassels -->
+      <rect x="0" y="16" width="20" height="40" rx="2" fill="var(--primary)"></rect>
+      <rect x="24" y="16" width="20" height="32" rx="2" fill="var(--accent)"></rect>
+      <rect x="48" y="16" width="20" height="40" rx="2" fill="var(--primary)"></rect>
+      <rect x="72" y="16" width="20" height="28" rx="2" fill="var(--accent)"></rect>
+      <rect x="96" y="16" width="20" height="40" rx="2" fill="var(--primary)"></rect>
+      <rect x="120" y="16" width="20" height="36" rx="2" fill="var(--accent)"></rect>
+      <rect x="144" y="16" width="20" height="40" rx="2" fill="var(--primary)"></rect>
+      <rect x="168" y="16" width="20" height="30" rx="2" fill="var(--accent)"></rect>
+      <rect x="192" y="16" width="20" height="40" rx="2" fill="var(--primary)"></rect>
+      <rect x="216" y="16" width="20" height="36" rx="2" fill="var(--accent)"></rect>
+      <rect x="240" y="16" width="20" height="40" rx="2" fill="var(--primary)"></rect>
+      <rect x="264" y="16" width="20" height="28" rx="2" fill="var(--accent)"></rect>
+      <rect x="288" y="16" width="20" height="40" rx="2" fill="var(--primary)"></rect>
+      <rect x="312" y="16" width="20" height="34" rx="2" fill="var(--accent)"></rect>
+      <rect x="336" y="16" width="20" height="40" rx="2" fill="var(--primary)"></rect>
+      <rect x="360" y="16" width="20" height="32" rx="2" fill="var(--accent)"></rect>
+      <rect x="384" y="16" width="20" height="40" rx="2" fill="var(--primary)"></rect>
+      <rect x="408" y="16" width="20" height="38" rx="2" fill="var(--accent)"></rect>
+      <rect x="432" y="16" width="20" height="40" rx="2" fill="var(--primary)"></rect>
+      <rect x="456" y="16" width="20" height="28" rx="2" fill="var(--accent)"></rect>
+      <rect x="480" y="16" width="20" height="40" rx="2" fill="var(--primary)"></rect>
+      <rect x="504" y="16" width="20" height="36" rx="2" fill="var(--accent)"></rect>
+      <rect x="528" y="16" width="20" height="40" rx="2" fill="var(--primary)"></rect>
+      <rect x="552" y="16" width="20" height="30" rx="2" fill="var(--accent)"></rect>
+      <rect x="576" y="16" width="20" height="40" rx="2" fill="var(--primary)"></rect>
+      <rect x="600" y="16" width="20" height="36" rx="2" fill="var(--accent)"></rect>
+      <rect x="624" y="16" width="20" height="40" rx="2" fill="var(--primary)"></rect>
+      <rect x="648" y="16" width="20" height="28" rx="2" fill="var(--accent)"></rect>
+      <rect x="672" y="16" width="20" height="40" rx="2" fill="var(--primary)"></rect>
+      <rect x="696" y="16" width="20" height="34" rx="2" fill="var(--accent)"></rect>
+      <rect x="720" y="16" width="20" height="40" rx="2" fill="var(--primary)"></rect>
+      <rect x="744" y="16" width="20" height="32" rx="2" fill="var(--accent)"></rect>
+      <rect x="768" y="16" width="20" height="40" rx="2" fill="var(--primary)"></rect>
+      <rect x="792" y="16" width="20" height="38" rx="2" fill="var(--accent)"></rect>
+      <rect x="816" y="16" width="20" height="40" rx="2" fill="var(--primary)"></rect>
+      <rect x="840" y="16" width="20" height="28" rx="2" fill="var(--accent)"></rect>
+      <rect x="864" y="16" width="20" height="40" rx="2" fill="var(--primary)"></rect>
+      <rect x="888" y="16" width="20" height="36" rx="2" fill="var(--accent)"></rect>
+      <rect x="912" y="16" width="20" height="40" rx="2" fill="var(--primary)"></rect>
+      <rect x="936" y="16" width="20" height="30" rx="2" fill="var(--accent)"></rect>
+      <rect x="960" y="16" width="20" height="40" rx="2" fill="var(--primary)"></rect>
+      <rect x="984" y="16" width="20" height="36" rx="2" fill="var(--accent)"></rect>
+      <rect x="1008" y="16" width="20" height="40" rx="2" fill="var(--primary)"></rect>
+      <rect x="1032" y="16" width="20" height="28" rx="2" fill="var(--accent)"></rect>
+      <rect x="1056" y="16" width="20" height="40" rx="2" fill="var(--primary)"></rect>
+      <rect x="1080" y="16" width="20" height="34" rx="2" fill="var(--accent)"></rect>
+      <rect x="1104" y="16" width="20" height="40" rx="2" fill="var(--primary)"></rect>
+      <rect x="1128" y="16" width="20" height="32" rx="2" fill="var(--accent)"></rect>
+      <rect x="1152" y="16" width="20" height="40" rx="2" fill="var(--primary)"></rect>
+      <rect x="1176" y="16" width="20" height="36" rx="2" fill="var(--accent)"></rect>
+    </svg>
+  </div>
+
+</section>
+
+<section class="broadcasts-updates-announcement-section" data-layout-spec="שידורים ועדכונים-announcement" dir="rtl">
+  <!-- Radial glow decoration -->
+  <div class="bua-glow-ring bua-glow-ring--primary" aria-hidden="true"></div>
+  <div class="bua-glow-ring bua-glow-ring--secondary" aria-hidden="true"></div>
+
+  <!-- Star accent SVG -->
+  <svg class="bua-star-accent bua-star-accent--right" aria-hidden="true" data-no-icon-edit="true" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+    <polygon points="10,1 12.4,7.2 19,7.6 14,12 15.8,18.8 10,15 4.2,18.8 6,12 1,7.6 7.6,7.2" fill="var(--accent)"></polygon>
+  </svg>
+  <svg class="bua-star-accent bua-star-accent--left" aria-hidden="true" data-no-icon-edit="true" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+    <polygon points="10,1 12.4,7.2 19,7.6 14,12 15.8,18.8 10,15 4.2,18.8 6,12 1,7.6 7.6,7.2" fill="var(--accent)"></polygon>
+  </svg>
+
+  <div class="bua-container">
+    <!-- Eyebrow label -->
+    <div class="bua-eyebrow">
+      <span class="bua-eyebrow-line"></span>
+      <span class="bua-eyebrow-text">הישארו מחוברים</span>
+      <span class="bua-eyebrow-line"></span>
+    </div>
+
+    <!-- Main heading -->
+    <h2 class="bua-heading">עקבו אחרי שידורי<br><span class="bua-heading-accent">הפועל ירושלים</span></h2>
+
+    <!-- Supporting paragraph -->
+    <p class="bua-body">אל תפספסו אף משחק — שידורים חיים, עדכונים שוטפים, ותוכן בלעדי לאוהדים הנאמנים של הקבוצה. אנחנו כאן בשבילכם בכל דקה של העונה.</p>
+
+    <!-- Divider accent -->
+    <div class="bua-divider" aria-hidden="true"></div>
+
+    <!-- CTA button -->
+    <a href="/contact" class="bua-cta-btn">
+      <span>צרו קשר לפרטים ושידורים</span>
+      <svg data-element-type="icon" data-icon-type="svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+    </a>
+
+    <!-- Supporting micro-info -->
+    <p class="bua-micro-info">
+      <i class="fa-solid fa-broadcast-tower" aria-hidden="true"></i>
+      שידורי הפועל ירושלים — עונה 2024/25
+    </p>
+  </div>
+</section>
+  </main>
+  
+  <footer class="site-footer" dir="rtl" aria-label="כותרת תחתונה של אתר הפועל ירושלים אוהדים">
+  <div class="footer-grain"></div>
+  <div class="footer-top-accent"></div>
+
+  <div class="footer-container">
+    <div class="footer-grid">
+
+      <!-- Column 1: Company Info -->
+      <div class="footer-col footer-col--brand">
+        <a href="/" class="footer-logo-link" aria-label="עמוד הבית - הפועל ירושלים אוהדים">
+          <img src="/assets/sports-basketball-club-logo.webp" alt="הפועל ירושלים אוהדים" class="logo">
+        </a>
+        <p class="footer-tagline">הלב הפועם של כדורסל ירושלים.<br>אוהדים, קהילה, תשוקה — בלב הבירה.</p>
+        <div class="footer-social" aria-label="רשתות חברתיות">
+          
+          
+          
+        </div>
+      </div>
+
+      <!-- Column 2: Quick Links -->
+      <div class="footer-col footer-col--links">
+        <h3 class="footer-heading"><span class="heading-accent"></span>ניווט מהיר</h3>
+        <ul class="footer-nav" aria-label="קישורים מהירים">
+          <li><a href="/">בית</a></li>
+          <li><a href="/schedule">לוח משחקים</a></li>
+          <li><a href="/broadcasts-updates">שידורים ועדכונים</a></li>
+          <li><a href="/club-fans">מועדון ואוהדים</a></li>
+          <li><a href="/contact">צור קשר</a></li>
+        </ul>
+      </div>
+
+      <!-- Column 3: Contact Info -->
+      <div class="footer-col footer-col--contact">
+        <h3 class="footer-heading"><span class="heading-accent"></span>יצירת קשר</h3>
+        <ul class="footer-contact" aria-label="פרטי יצירת קשר">
+          <li>
+            <span class="contact-icon"><i class="fas fa-envelope"></i></span>
+            <span class="contact-text"><a href="mailto:[business_email]">[business_email]</a></span>
+          </li>
+          <li>
+            <span class="contact-icon"><i class="fas fa-phone"></i></span>
+            <span class="contact-text"><a href="tel:[business_phone]">[business_phone]</a></span>
+          </li>
+          <li><a href="/"><span class="contact-icon"><i class="fas fa-map-marker-alt"></i></span>
+            <span class="contact-text">[business_address]</span></a></li>
+        </ul>
+      </div>
+
+      <!-- Column 4: Hours / Badge -->
+      <div class="footer-col footer-col--hours">
+        <h3 class="footer-heading"><span class="heading-accent"></span>שעות פעילות</h3>
+        <ul class="footer-hours" aria-label="שעות פעילות">
+          <li><a href="/"><span class="hours-day">ראשון – חמישי</span><span class="hours-time">09:00 – 18:00</span></a></li>
+          <li><a href="/"><span class="hours-day">שישי</span><span class="hours-time">09:00 – 13:00</span></a></li>
+          <li><a href="/"><span class="hours-day">שבת</span><span class="hours-time">סגור</span></a></li>
+        </ul>
+        <div class="footer-badge" aria-label="תמיכה זמינה">
+          <i class="fas fa-basketball-ball"></i>
+          <span>תמיד עם הקבוצה</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Bottom Bar -->
+  <div class="footer-bottom-bar">
+    <div class="footer-container footer-bottom-inner">
+      <p class="footer-copyright">© 2026 הפועל ירושלים אוהדים. כל הזכויות שמורות.</p>
+      <div class="footer-legal" aria-label="קישורים משפטיים">
+        <a href="/privacy">מדיניות פרטיות</a>
+        <span class="legal-divider" aria-hidden="true">|</span>
+        <a href="/terms">תנאי שימוש</a>
+        <span class="legal-divider" aria-hidden="true">|</span>
+        <a href="/accessibility">נגישות</a>
+        <span class="legal-divider" aria-hidden="true">|</span>
+        <a href="https://zappy5.com" target="_blank" class="zappy-attribution">נוצר באמצעות Zappy</a>
+      </div>
+    </div>
+  </div>
+</footer>
+  
+  <a href="https://wa.me/[whatsapp_handle]" class="whatsapp-float" aria-label="WhatsApp">
+    <i class="fab fa-whatsapp"></i>
+  </a>
+  
+  <div data-integration="accessibility:toolbar"></div>
+
+    <script src="/script.js"></script>
+
+    <script id="zappy-mobile-submenu-script">
+    (function() {
+      function initMobileSubmenuToggles() {
+        if (window.innerWidth > 768) {
+          document.querySelectorAll('.mobile-submenu-toggle').forEach(function(btn) { btn.remove(); });
+          document.querySelectorAll('.sub-menu.mobile-expanded').forEach(function(menu) { menu.classList.remove('mobile-expanded'); });
+          return;
+        }
+        var items = document.querySelectorAll('.nav-menu li:has(.sub-menu), nav li:has(.sub-menu), .navbar li:has(.sub-menu), #navMenu li:has(.sub-menu)');
+        items.forEach(function(li) {
+          if (li.querySelector('.mobile-submenu-toggle')) return;
+          var submenu = li.querySelector('.sub-menu');
+          var parentLink = li.querySelector(':scope > a');
+          if (!submenu || !parentLink) return;
+          var toggleBtn = document.createElement('button');
+          toggleBtn.className = 'mobile-submenu-toggle';
+          toggleBtn.setAttribute('aria-label', 'Toggle submenu');
+          toggleBtn.setAttribute('type', 'button');
+          parentLink.insertAdjacentElement('afterend', toggleBtn);
+          toggleBtn.addEventListener('click', function(e) {
+            e.preventDefault(); e.stopPropagation();
+            document.querySelectorAll('.sub-menu.mobile-expanded').forEach(function(menu) {
+              if (menu !== submenu) { menu.classList.remove('mobile-expanded'); var t = menu.parentElement.querySelector('.mobile-submenu-toggle'); if(t) t.classList.remove('expanded'); }
+            });
+            submenu.classList.toggle('mobile-expanded');
+            toggleBtn.classList.toggle('expanded');
+          });
+        });
+      }
+      if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initMobileSubmenuToggles); }
+      else { initMobileSubmenuToggles(); }
+      var resizeTimer; window.addEventListener('resize', function() { clearTimeout(resizeTimer); resizeTimer = setTimeout(initMobileSubmenuToggles, 250); });
+      // Re-initialize when mobile menu becomes visible (MutationObserver)
+      var observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+          if (mutation.type === 'attributes') {
+            var target = mutation.target;
+            if (target.classList && (target.classList.contains('active') || target.classList.contains('open'))) {
+              setTimeout(initMobileSubmenuToggles, 100);
+            }
+          }
+        });
+      });
+      setTimeout(function() {
+        document.querySelectorAll('.mobile-menu, .nav-menu, #navMenu, nav').forEach(function(menu) {
+          observer.observe(menu, { attributes: true, attributeFilter: ['class', 'style'] });
+        });
+      }, 500);
+    })();
+    </script>
+
+    <script id="zappy-navbar-scroll-effect">
+    (function(){
+      var nb=document.querySelector('nav.navbar,.navbar:not(.zappy-catalog-menu)');
+      var cm=document.querySelector('.zappy-catalog-menu,#zappy-catalog-menu');
+      if(!nb)return;
+      var fb='rgba(247,242,234,0.85)';
+      var th=60;
+      var rs=getComputedStyle(document.documentElement);
+      var td=rs.getPropertyValue('--text-dark').trim()||'#1a1a1a';
+      var tl=rs.getPropertyValue('--text-light').trim()||'#ffffff';
+      var st=true?td:tl;
+      nb.style.transition='background 0.3s ease,backdrop-filter 0.3s ease,-webkit-backdrop-filter 0.3s ease,box-shadow 0.3s ease';
+      if(cm)cm.style.transition='background 0.3s ease,backdrop-filter 0.3s ease,-webkit-backdrop-filter 0.3s ease';
+      var neSel='a,.navbar-brand,.navbar-brand a,.dropdown-toggle,.mobile-toggle,.phone-header-btn,.mobile-hamburger-btn,.mobile-close-btn,.mobile-submenu-toggle,.nav-link';
+      var skipCls=['cart-link','login-link','nav-search-toggle','search-toggle'];
+      function sTC(c,clr){var els=c.querySelectorAll(neSel);for(var i=0;i<els.length;i++){var sk=false;if(els[i].closest('.sub-menu')||els[i].closest('.dropdown-menu')){sk=true;}for(var j=0;j<skipCls.length;j++){if(els[i].classList.contains(skipCls[j])){sk=true;break;}}if(!sk)els[i].style.setProperty('color',clr,'important');}}
+      function cTC(c){var els=c.querySelectorAll(neSel);for(var i=0;i<els.length;i++){if(els[i].closest('.sub-menu')||els[i].closest('.dropdown-menu'))continue;els[i].style.removeProperty('color');}}
+      function applyScrolled(){
+        nb.classList.add('scrolled');
+        if(window.innerWidth>768){
+          nb.style.setProperty('--frosted-text',st);
+          nb.style.setProperty('background-image','none','important');
+          nb.style.setProperty('background-color',fb,'important');
+          nb.style.backdropFilter='blur(12px)';nb.style.webkitBackdropFilter='blur(12px)';nb.style.boxShadow='0 2px 16px rgba(0,0,0,0.12)';
+          sTC(nb,st);
+        }
+        if(cm){cm.classList.add('scrolled');if(window.innerWidth>768){cm.style.setProperty('background',fb,'important');cm.style.setProperty('backdrop-filter','blur(12px)','important');cm.style.setProperty('-webkit-backdrop-filter','blur(12px)','important');sTC(cm,st);}}
+      }
+      function onS(){
+        if(window._zappyNavNoDarkHero) return;
+        if(window.innerWidth<=768){nb.classList.remove('scrolled');cTC(nb);if(cm){cm.classList.remove('scrolled');cTC(cm);}return;}
+        var y=window.scrollY||window.pageYOffset;
+        if(y>th){
+          nb.classList.add('scrolled');nb.style.setProperty('background-color',fb,'important');nb.style.setProperty('background-image','none','important');
+          nb.style.setProperty('--frosted-text',st);nb.style.backdropFilter='blur(12px)';nb.style.webkitBackdropFilter='blur(12px)';nb.style.boxShadow='0 2px 16px rgba(0,0,0,0.12)';
+          sTC(nb,st);
+          if(cm){cm.classList.add('scrolled');cm.style.setProperty('background',fb,'important');cm.style.setProperty('backdrop-filter','blur(12px)','important');cm.style.setProperty('-webkit-backdrop-filter','blur(12px)','important');sTC(cm,st);}
+        }else{
+          nb.classList.remove('scrolled');nb.style.setProperty('background-color','transparent','important');nb.style.removeProperty('background-image');
+          nb.style.removeProperty('--frosted-text');nb.style.backdropFilter='none';nb.style.webkitBackdropFilter='none';nb.style.boxShadow='none';
+          cTC(nb);
+          if(cm){cm.classList.remove('scrolled');cm.style.setProperty('background','transparent','important');cm.style.setProperty('backdrop-filter','none','important');cm.style.setProperty('-webkit-backdrop-filter','none','important');cTC(cm);}
+        }
+      }
+      function sLum(rv,gv,bv){rv/=255;gv/=255;bv/=255;rv=rv<=0.03928?rv/12.92:Math.pow((rv+0.055)/1.055,2.4);gv=gv<=0.03928?gv/12.92:Math.pow((gv+0.055)/1.055,2.4);bv=bv<=0.03928?bv/12.92:Math.pow((bv+0.055)/1.055,2.4);return 0.2126*rv+0.7152*gv+0.0722*bv;}
+      window.addEventListener('scroll',onS,{passive:true});
+      window.addEventListener('resize',onS,{passive:true});
+      onS();
+      var heroEl=document.querySelector('section[class*="hero"],[data-hero-type],main>section:first-child');
+      var hasDH=false;
+      if(heroEl){var hCs=getComputedStyle(heroEl);var hBI=hCs.backgroundImage;if(hBI&&hBI!=='none'){if(hBI.indexOf('url(')!==-1){var hM2=hCs.backgroundColor.match(/\d+/g);if(hM2&&hM2.length>=3){hasDH=sLum(parseInt(hM2[0]),parseInt(hM2[1]),parseInt(hM2[2]))<0.4;}else{hasDH=true;}}else if(hBI.indexOf('gradient')!==-1){var cM=hBI.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/g);if(cM&&cM.length>0){var tLm=0;for(var ci=0;ci<cM.length;ci++){var pts=cM[ci].match(/\d+/g);tLm+=sLum(parseInt(pts[0]),parseInt(pts[1]),parseInt(pts[2]));}hasDH=(tLm/cM.length)<0.4;}else{hasDH=true;}}else{hasDH=true;}}else{var hM=hCs.backgroundColor.match(/\d+/g);if(hM&&hM.length>=3){hasDH=sLum(parseInt(hM[0]),parseInt(hM[1]),parseInt(hM[2]))<0.4;}}}
+      if(!hasDH){window.removeEventListener('scroll',onS);window.removeEventListener('resize',onS);applyScrolled();window._zappyNavNoDarkHero=true;}
+    })();
+    </script>
+</body>
+</html>
